@@ -12,7 +12,7 @@ public abstract class Figure {
 
     public COLORS color;
 
-    private ChessBoard chessBoard;
+    protected ChessBoard chessBoard;
 
     public Figure(int y, int x, COLORS color, ChessBoard chessBoard) {
         this.x = x;
