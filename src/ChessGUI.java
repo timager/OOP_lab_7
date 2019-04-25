@@ -9,17 +9,18 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class ChessGUI extends JFrame {
     private int length;
     private JPanel[][] cells;
     private ChessBoard chessBoard;
-    private Figure checkedFigure;
 
     private void drawChessBoard() {
         Container container = this.getContentPane();
         container.setLayout(new GridLayout(0, length));
         cells = new JPanel[length][length];
+        JPanelListener listener = new JPanelListener();
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 JPanel panel = new JPanel();
@@ -28,13 +29,15 @@ public class ChessGUI extends JFrame {
                 } else {
                     panel.setBackground(Color.DARK_GRAY);
                 }
-                panel.addMouseListener(new JPanelListener());
                 cells[i][j] = panel;
+                container.add(cells[i][j]);
             }
         }
+        container.addMouseListener(listener);
     }
 
     public class JPanelListener implements MouseListener {
+        private Figure checkedFigure;
 
 
         @Override
@@ -46,7 +49,7 @@ public class ChessGUI extends JFrame {
         public void mousePressed(MouseEvent e) {
             for(int i=0;i<length;i++){
                 for(int j=0;j<length;j++){
-                    if(cells[i][j]==e.getComponent()){
+                    if(cells[i][j]==e.getComponent().getComponentAt(e.getX(), e.getY())){
                         checkedFigure = chessBoard.get(i,j);
                         System.out.println("Нажал "+i+","+j);
                     }
@@ -58,8 +61,8 @@ public class ChessGUI extends JFrame {
         public void mouseReleased(MouseEvent e) {
             for(int i=0;i<length;i++){
                 for(int j=0;j<length;j++){
-                    if(cells[i][j]==e.getComponent()){
-                        checkedFigure.move(i+1,j);
+                    if(cells[i][j]==e.getComponent().getComponentAt(e.getX(), e.getY()) && checkedFigure != null){
+                        checkedFigure.move(i,j);
                         System.out.println("Отпустил "+i+","+j);
                         redraw();
                     }
@@ -81,7 +84,7 @@ public class ChessGUI extends JFrame {
     private ChessGUI(int length) {
         super("Шахматы");
         this.length = length;
-        this.setBounds(0, 0, length * 50, length * 50);
+        this.setBounds(0, 0, length * 60, length * 60);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         drawChessBoard();
@@ -118,13 +121,8 @@ public class ChessGUI extends JFrame {
 
     private void redraw() {
         Container container = this.getContentPane();
-        container.setLayout(new GridLayout(0, length));
         drawFigures();
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < length; j++) {
-                container.add(cells[i][j]);
-            }
-        }
+        container.validate();
         container.repaint();
     }
 
