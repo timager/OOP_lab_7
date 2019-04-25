@@ -1,7 +1,7 @@
 package classes;
 
 public class ChessBoard {
-    public int length;
+    private int length;
     private Figure[][] positions;
 
     public ChessBoard(int length) {
@@ -17,7 +17,7 @@ public class ChessBoard {
         return (length > x && length > y);
     }
 
-    public void set(Figure figure, int x, int y) {
+    void set(Figure figure, int x, int y) {
         positions[figure.x][figure.y] = null;
         positions[x][y] = figure;
         figure.x = x;

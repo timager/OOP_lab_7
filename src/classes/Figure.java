@@ -1,7 +1,5 @@
 package classes;
 
-import javax.swing.*;
-
 public abstract class Figure {
     public enum COLORS {
         BLACk,
@@ -16,7 +14,7 @@ public abstract class Figure {
 
     private ChessBoard chessBoard;
 
-    public Figure(int x, int y, COLORS color, ChessBoard chessBoard) {
+    public Figure(int y, int x, COLORS color, ChessBoard chessBoard) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -44,6 +42,9 @@ public abstract class Figure {
     public void move(int x, int y) {
         if (fullCheck(x, y)) {
             chessBoard.set(this, x, y);
+        }
+        else {
+            System.out.println("Так ходить нельзя");
         }
     }
 }

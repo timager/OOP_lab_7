@@ -6,11 +6,15 @@ import figures.Rook;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
 
 public class ChessGUI extends JFrame {
     private int length;
     private JPanel[][] cells;
     private ChessBoard chessBoard;
+    private Figure checkedFigure;
 
     private void drawChessBoard() {
         Container container = this.getContentPane();
@@ -24,9 +28,53 @@ public class ChessGUI extends JFrame {
                 } else {
                     panel.setBackground(Color.DARK_GRAY);
                 }
+                panel.addMouseListener(new JPanelListener());
                 cells[i][j] = panel;
-                container.add(panel);
             }
+        }
+    }
+
+    public class JPanelListener implements MouseListener {
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            for(int i=0;i<length;i++){
+                for(int j=0;j<length;j++){
+                    if(cells[i][j]==e.getComponent()){
+                        checkedFigure = chessBoard.get(i,j);
+                        System.out.println("Нажал "+i+","+j);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            for(int i=0;i<length;i++){
+                for(int j=0;j<length;j++){
+                    if(cells[i][j]==e.getComponent()){
+                        checkedFigure.move(i+1,j);
+                        System.out.println("Отпустил "+i+","+j);
+                        redraw();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
 
@@ -57,13 +105,12 @@ public class ChessGUI extends JFrame {
     }
 
     private void drawFigures() {
-        for (int i = 0; i < chessBoard.length; i++) {
-            for (int j = 0; j < chessBoard.length; j++) {
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
                 Figure figure = chessBoard.get(i, j);
+                cells[i][j].removeAll();
                 if (figure != null) {
                     drawFigure(figure);
-                } else {
-                    cells[i][j].removeAll();
                 }
             }
         }
@@ -72,11 +119,13 @@ public class ChessGUI extends JFrame {
     private void redraw() {
         Container container = this.getContentPane();
         container.setLayout(new GridLayout(0, length));
+        drawFigures();
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 container.add(cells[i][j]);
             }
         }
+        container.repaint();
     }
 
     private void drawFigure(Figure figure) {
@@ -97,7 +146,6 @@ public class ChessGUI extends JFrame {
         ChessGUI chess = new ChessGUI(length);
         chess.chessBoard = new ChessBoard(length);
         chess.setFigures();
-        chess.drawFigures();
         chess.redraw();
         chess.setVisible(true);
     }
